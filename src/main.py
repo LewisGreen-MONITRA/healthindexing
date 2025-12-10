@@ -1,15 +1,31 @@
+"""
+Simple anomaly detection method in python.
+Identifies points along time series data that deviates from the mean value 
+to a highly significant degree. 
+"""
+
 import numpy as np
 import pandas as pd 
+import math 
 import matplotlib.pyplot as plt
 
 from scipy.stats import zscore
-from math import sqrt
+
 
 """
 Seaborn config 
 """
 import seaborn as sns 
 sns.set_theme(style="whitegrid")
+
+# try and implement without using scipy? 
+def zScore(sample, mu, std): # std deviation can be pulled from the data. 
+    n = len(sample)
+    sample_mu = sum(sample) / n
+
+    z = (sample_mu - mu) / (std / math.sqrt(n))
+    return z
+
 
 def main():
     
@@ -30,7 +46,7 @@ def main():
     sensor_filtered_df['z_score'] = zscore(sensor_filtered_df['value'])
     threshold = 2 # standard for cpaturing highly significant outliers
     outliers = sensor_filtered_df[(sensor_filtered_df['z_score'].abs() > threshold)]
-    
+    # plots trend 
     sns.lineplot(
         x=sensor_filtered_df.index,
         y='value',
@@ -39,7 +55,7 @@ def main():
         color='blue',
         linewidth=1.5
     )          
-  
+    # plot outliers
     sns.scatterplot(
         x=outliers.index,
         y='value',
@@ -49,8 +65,6 @@ def main():
         s=100, # Adjust size for visibility
         marker='X' # Use a distinct marker
     )
-    # displaying one continuos line plot, multiple values assignged to the same index?
-    # doing this on matplotlib, test with sns 
     plt.title(f'Value over time with Z-score Outliers (threshold > {threshold}) for {selected_sensor}')
     plt.xlabel('Time')
     plt.ylabel('Value')
