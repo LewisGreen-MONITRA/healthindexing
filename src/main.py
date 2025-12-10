@@ -10,8 +10,6 @@ import math
 import matplotlib.pyplot as plt
 
 from scipy.stats import zscore
-
-
 """
 Seaborn config 
 """
@@ -22,14 +20,12 @@ sns.set_theme(style="whitegrid")
 def zScore(sample, mu, std): # std deviation can be pulled from the data. 
     n = len(sample)
     sample_mu = sum(sample) / n
-
     z = (sample_mu - mu) / (std / math.sqrt(n))
     return z
 
 
 def main():
-    
-    df = pd.read_csv("C:/Users/ldgre/Desktop/wfh/healthindexing/data/data.csv")
+    df = pd.read_csv("./data.csv")
     # reading == value rounded to 3 sf
     # tidy the column names
     df.columns = df.columns.str.replace(" ", "_")
