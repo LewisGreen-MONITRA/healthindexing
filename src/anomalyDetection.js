@@ -14,5 +14,9 @@ function zScore(arr) {
     return arr.map(v => (v - m) / sd); 
 }
 
+// TODO 
+// need to now implement if that z score is highly significant,
+//  if so value associated is an outlier
+
 const data = [10, 20, 30, 40, 50];
 console.log(zScore(data));
