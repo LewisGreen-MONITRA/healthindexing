@@ -14,6 +14,13 @@ function zScore(arr) {
     return arr.map(v => (v - m) / sd); 
 }
 
+function moddedZscore(arr){
+    const md = median(arr);
+    const mad = (x - md).median();
+    return 0.6745 * (x - md) / mad;
+}
+
+
 // TODO 
 // need to now implement if that z score is highly significant,
 //  if so value associated is an outlier
