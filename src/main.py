@@ -6,9 +6,6 @@ to a highly significant degree.
 from shiny.express import render, ui
 from shared import * 
 
-
-
-
 def server():
     @render.plot(height=300)
     def time_series():
@@ -24,7 +21,7 @@ def main():
         sensor_filtered_df['z_score'] = zscore(sensor_filtered_df['value'])
         threshold = 3 # standard for cpaturing highly significant outliers, p<0.001 
         outliers = sensor_filtered_df[(sensor_filtered_df['z_score'].abs() > threshold)]
-        plotResults(sensor_filtered_df, outliers=outliers)
+        plotResults(sensor_filtered_df, outliers)
     else: 
         if len(sensor_filtered_df) != 0: 
             print(f'Using Modified Z-score for n < 30')
