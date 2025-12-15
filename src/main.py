@@ -5,11 +5,9 @@ to a highly significant degree.
 
 """
 from shared import * 
-
-
 def main():
     # filter by sensor
-    selected_sensor = "GT1 U"
+    selected_sensor = "GT1 W"
     sensor_filtered_df = filtered[filtered['sensor_name'] == selected_sensor]
     sensor_filtered_df = sensor_filtered_df[sensor_filtered_df['units'] == "V/cycle"]
     if len(sensor_filtered_df) >= 30: # high number of samples 
@@ -18,7 +16,8 @@ def main():
         threshold = 2 # standard for cpaturing highly significant outliers, p<0.001 
         outliers = sensor_filtered_df[(sensor_filtered_df['z_score'].abs() > threshold)]
         plotResults(sensor_filtered_df, outliers)
-        #plotSTL(sensor_filtered_df)
+        a_max = int(0.1 * len(sensor_filtered_df['value']))
+        outlier_index, outlier_value = genESD(sensor_filtered_df['value'], alpha =0.005, max= a_max, return_stats=False)
     else: 
         if len(sensor_filtered_df) != 0: 
             print(f'Using Modified Z-score for n < 30')
@@ -29,7 +28,7 @@ def main():
         else: 
             print(f'ERROR: No Samples Provided for Sensor {selected_sensor}')
 
-    return print(sensor_filtered_df.head())
+    return print(outlier_index, outlier_value)
 
 if __name__ == "__main__":
     main() 

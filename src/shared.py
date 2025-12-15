@@ -106,7 +106,7 @@ def esd_values(n, j, alpha):
      if df <= 0:
           raise ValueError("Degrees of freedom must be positive!")
      
-     t_quantile = stats.t.ppf(1 - alpha / (2 * (n - j)), df)
+     t_quantile = t.ppf(1 - alpha / (2 * (n - j)), df)
      numer = (n - j) * t_quantile
      denom = np.sqrt((df + t_quantile**2) * (n - j + 1))
      return numer / denom
