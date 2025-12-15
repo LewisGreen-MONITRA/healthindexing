@@ -6,6 +6,7 @@ to a highly significant degree.
 """
 from shared import * 
 
+
 def main():
     # filter by sensor
     selected_sensor = "GT1 U"
@@ -17,12 +18,14 @@ def main():
         threshold = 2 # standard for cpaturing highly significant outliers, p<0.001 
         outliers = sensor_filtered_df[(sensor_filtered_df['z_score'].abs() > threshold)]
         plotResults(sensor_filtered_df, outliers)
+        #plotSTL(sensor_filtered_df)
     else: 
         if len(sensor_filtered_df) != 0: 
             print(f'Using Modified Z-score for n < 30')
             threshold = 2.5 # standard for capturing highly significant outliers, p<0.001 in modified ztest scenarios 
             outliers = sensor_filtered_df[np.abs(modified_zscore(sensor_filtered_df['value']) > threshold)]
             plotResults(sensor_filtered_df, outliers)
+            #plotSTL(sensor_filtered_df)
         else: 
             print(f'ERROR: No Samples Provided for Sensor {selected_sensor}')
 
