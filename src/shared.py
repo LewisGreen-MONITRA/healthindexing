@@ -101,7 +101,68 @@ def plotSTL(arr):
      
      return 
 
+def esd_values(n, j, alpha):
+     df = n - j - 1
+     if df <= 0:
+          raise ValueError("Degrees of freedom must be positive!")
+     
+     t_quantile = stats.t.ppf(1 - alpha / (2 * (n - j)), df)
+     numer = (n - j) * t_quantile
+     denom = np.sqrt((df + t_quantile**2) * (n - j + 1))
+     return numer / denom
 
+
+def genESD(x, alpha, max, return_stats: bool):
+    x = np.asarray(x,  dtype=float).ravel()
+    n = len(x)
+
+    if n < 3:
+        raise ValueError("Need at least 3 observations!")
+    
+    if max is None:
+         max = n // 2
+    max = min(max, n - 2)
+
+    remaining = np.arange(n)
+    outlier_indicies = []
+    r_vals = []
+    lambda_vals = []
+    indicies = []
+
+    for j in range(1, max + 1):
+         subset = x[remaining]
+         mu = np.mean(subset)
+         simga = np.std(subset, ddof=1)
+         if simga == 0:
+              break
+         resid = np.abs(subset - mu) / simga
+         max_local = np.argmax(resid)
+         r_j = resid[max_local]
+         lambda_j = esd_values(n, j ,alpha)
+
+         r_vals.append(r_j)
+         lambda_vals.append(lambda_j)
+         indicies.append(remaining[max_local])
+
+         if r_j > lambda_j:
+              outlier_indicies.append(remaining[max_local])
+              remaining = remaining[remaining != remaining[max_local]]
+              if len(remaining) < 2:
+                   break
+              else:
+                   break
+    outlier_indicies = np.array(outlier_indicies, dtype=int)
+    outlier_values = x[outlier_indicies]
+
+    if return_stats: 
+         return outlier_indicies, outlier_values, {
+              "R": np.array(r_vals),
+              "lambda": np.array(lambda_vals),
+              "candidate": np.array(indicies)         
+        }
+    else: 
+         return outlier_indicies, outlier_values
+    
 def lightESD(arr):
     """
     Implementation of lightESD as outlined by Das & Luo 20223
@@ -139,7 +200,7 @@ def lightESD(arr):
     else: 
         x =+ 1  
     a_max = 0.1 * len(arr)
-    outliers = []
+    outliers = genESD(arr, alpha=0.05, max= a_max, return_stats=True)
     outlier_index = outliers.index 
     if outliers[1] == True & outliers[2] == False:
          outliers[1] = False
