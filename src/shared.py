@@ -101,6 +101,15 @@ def plotSTL(arr):
      
      return 
 
+def robustTestStat(y):
+     std = np.std(y)
+     mu = np.mean(y)
+     abs_val = abs(y - mu)
+     max_dev = abs(abs_val)
+     max_ind = np.argmax(abs_val)
+     cal = max_dev / std
+     return cal, max_ind
+
 def esd_values(n, j, alpha):
      df = n - j - 1
      if df <= 0:
@@ -115,10 +124,8 @@ def esd_values(n, j, alpha):
 def genESD(x, alpha, max, return_stats: bool):
     x = np.asarray(x,  dtype=float).ravel()
     n = len(x)
-
     if n < 3:
         raise ValueError("Need at least 3 observations!")
-    
     if max is None:
          max = n // 2
     max = min(max, n - 2)
@@ -181,7 +188,7 @@ def lightESD(arr):
             max_power.append(Pmax)
          max_power = max_power.sort()
          index = 0.99 * len(max_power)
-         thresh = max_power.index
+         thresh = max_power[index]
          freq, pow = welch(arr)
          prd = -1 
          temp_psd = -1
@@ -196,16 +203,17 @@ def lightESD(arr):
     
     period = periodDetection(arr)
     if period == 1:
-          x += 1
+        residual = arr - robustTestStat(arr)
     else: 
-        x =+ 1  
+        residual = 1
+
     a_max = 0.1 * len(arr)
     outliers = genESD(arr, alpha=0.05, max= a_max, return_stats=True)
     outlier_index = outliers.index 
-    if outliers[1] == True & outliers[2] == False:
-         outliers[1] = False
-         outlier_index.drop[1]
+    if outliers[0] == True & outliers[1] == False:
+         outliers[0] = False
+         outlier_index.drop[0]
+    
 
     anomalies = outlier_index
-    return anomalies
-
+    return anomalies    
