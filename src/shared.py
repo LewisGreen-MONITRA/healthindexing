@@ -190,49 +190,5 @@ def genESD(x, alpha, max, return_stats: bool):
     else: 
          return outlier_indicies, outlier_values
     
-def lightESD(arr):
-    """
-    Implementation of lightESD as outlined by Das & Luo 20223
-    https://arxiv.org/pdf/2305.12266
-    
-    :param arr: time series data 
-    """
-    outlier_index = []
 
-    def periodDetection(arr):
-         max_power = []
-         for i in range(1, 100):         
-            arr_i = list(itertools.permutations(arr))
-            freq, pow = welch(arr_i)
-            Pmax = max(pow)
-            max_power.append(Pmax)
-         max_power = max_power.sort()
-         index = 0.99 * len(max_power)
-         thresh = max_power[index]
-         freq, pow = welch(arr)
-         prd = -1 
-         temp_psd = -1
-         for j in len(pow) - 1:
-              if pow[j] > thresh & pow[j] > pow[j-1] & pow[j] > pow[j+1]:
-                   if pow[j] > temp_psd:
-                        prd +=(1/freq[j])
-                        temp_psd = pow[j]
-         if prd == -1: 
-              prd = 1
-         return prd
-    
-    period = periodDetection(arr)
-    if period == 1:
-        residual = arr - robustTestStat(arr)
-    else: 
-        residual = STL(arr['value'], period= period, robust= True).fit()
-     
-    a_max = 0.1 * len(arr)
-    outliers = genESD(residual, alpha=0.05, max= a_max, return_stats=True)
-    outlier_index = outliers.index 
-    if outliers[0] == True & outliers[1] == False:
-         outliers[0] = False
-         outlier_index.drop[0]
-    
-    anomalies = outlier_index
-    return anomalies    
+
