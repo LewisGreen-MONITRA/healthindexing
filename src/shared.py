@@ -32,8 +32,8 @@ features = ['value', 'time', 'sensor_name', 'units']
 filtered = df[features]
 filtered = filtered.set_index('time')
 
-# TODO create dictionary of all units of measure 
-# filter plots based on the unit, create new plot something like that 
+unit_Dict = df['units'].to_dict()
+sensor_Dict = df['sensor_name'].to_dict()
 
 def modified_zscore(x):
     """
@@ -111,6 +111,13 @@ def robustTestStat(y):
      return cal, max_ind
 
 def esd_values(n, j, alpha):
+     """
+     critical values for esd test
+     
+     :param n: number of samples
+     :param j: iterator
+     :param alpha: significance level 
+     """
      df = n - j - 1
      if df <= 0:
           raise ValueError("Degrees of freedom must be positive!")
@@ -122,13 +129,22 @@ def esd_values(n, j, alpha):
 
 
 def genESD(x, alpha, max, return_stats: bool):
+    """
+    general ESD test for outlier detection
+    
+    :param x: sample of data array
+    :param alpha: confidence interval, 0.005
+    :param max: max number of outliers
+    :param return_stats: return debugging stats 
+    :type return_stats: bool
+    """
     x = np.asarray(x,  dtype=float).ravel()
     n = len(x)
     if n < 3:
         raise ValueError("Need at least 3 observations!")
     if max is None:
          max = n // 2
-    max = min(max, n - 2)
+    max = math.floor(min(max, n - 2))
 
     remaining = np.arange(n)
     outlier_indicies = []
