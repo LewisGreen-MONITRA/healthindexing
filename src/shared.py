@@ -84,6 +84,11 @@ def plotResults(df, outliers):
         plt.show()
 
 def plotSTL(arr):
+     """
+     Plot signal decomposition
+
+     :param arr: sample of values
+     """
      stl = STL(arr['value'], period= 12, robust= True)
      result = stl.fit()
      
@@ -97,7 +102,6 @@ def plotSTL(arr):
      ax3.set_title('Residual Component')
      plt.tight_layout()
      plt.show()
-     
      
      return 
 
@@ -221,15 +225,14 @@ def lightESD(arr):
     if period == 1:
         residual = arr - robustTestStat(arr)
     else: 
-        residual = 1
-
+        residual = STL(arr['value'], period= period, robust= True).fit()
+     
     a_max = 0.1 * len(arr)
-    outliers = genESD(arr, alpha=0.05, max= a_max, return_stats=True)
+    outliers = genESD(residual, alpha=0.05, max= a_max, return_stats=True)
     outlier_index = outliers.index 
     if outliers[0] == True & outliers[1] == False:
          outliers[0] = False
          outlier_index.drop[0]
     
-
     anomalies = outlier_index
     return anomalies    
