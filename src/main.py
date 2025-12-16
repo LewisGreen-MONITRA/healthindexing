@@ -1,11 +1,10 @@
-"""
-Simple anomaly detection method in python.
-Identifies points along time series data that deviates from the mean value 
-to a highly significant degree. 
-
-"""
 from shared import * 
 def main():
+    """
+    Simple anomaly detection method in python.
+    Identifies points along time series data that deviates from the mean value 
+    to a highly significant degree. 
+    """
     # filter by sensor
     selected_sensor = "GT1 V"
     sensor_filtered_df = filtered[filtered['sensor_name'] == selected_sensor]
@@ -15,7 +14,8 @@ def main():
         sensor_filtered_df['z_score'] = zscore(sensor_filtered_df['value'])
         threshold = 3 # standard for cpaturing highly significant outliers, p<0.001 
         outliers = sensor_filtered_df[(sensor_filtered_df['z_score'].abs() > threshold)]
-        plotResults(sensor_filtered_df, outliers)
+        #plotResults(sensor_filtered_df, outliers)
+        plotSTL(sensor_filtered_df)
         a_max = 0.1 * len(sensor_filtered_df['value'])
         outlier_index, outlier_value, stats = genESD(sensor_filtered_df['value'], alpha =0.005, max= a_max, return_stats=True)
     else: 
