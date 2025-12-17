@@ -8,7 +8,7 @@ import math
 from scipy.stats import *
 from scipy.signal import *
 from statsmodels.tsa.seasonal import STL
-import itertools
+
 import pandas as pd 
 import numpy as np
 
@@ -35,7 +35,7 @@ filtered = filtered.set_index('time')
 unit_Dict = df['units'].to_dict()
 sensor_Dict = df['sensor_name'].to_dict()
 
-def modified_zscore(x):
+def modifiedZscore(x):
     """
     Implementation of zscore for where n < 30 
     
