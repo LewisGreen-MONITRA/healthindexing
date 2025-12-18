@@ -155,7 +155,6 @@ def genESD(x, alpha, max, return_stats: bool):
     r_vals = []
     lambda_vals = []
     indicies = []
-
     for j in range(1, max + 1):
          subset = x[remaining]
          mu = np.mean(subset)
@@ -189,6 +188,42 @@ def genESD(x, alpha, max, return_stats: bool):
         }
     else: 
          return outlier_indicies, outlier_values
-    
+
+def covariance(df):
+     """
+     Calculate matrix covariance for given sensors of time series data. 
+     given a matrix m, each vector within the matrix contains time series data for each 
+     sensor, say m1 m2....mi with data taken from each value measured say x y... 
+     each of the matricies are created by the data collected at each timestamp 
+     
+     m =    x  y 
+         m1 1  2
+         m2 2  1
+         m3 1  2
+     
+     calculate the mean of a given matrix, the average values of each vector within the
+     initial matrix m 
+
+     can then calculate the std between means at each vector space 
+
+     need to create the matrix. isolate each value and assign them to a vector/column 
+     in the matrix. 
+
+     :param df: Sample 
+     """
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
