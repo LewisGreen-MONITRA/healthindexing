@@ -216,6 +216,19 @@ def covariance(df):
 
 
 
+def elipticalOutlier(df):
+     for s in df['sensor_name'].unique():
+          
+
+     
+     
+     return 
+
+     
+
+
+
+
 
 
 
