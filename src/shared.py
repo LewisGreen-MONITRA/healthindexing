@@ -8,6 +8,7 @@ import math
 from scipy.stats import *
 from scipy.signal import *
 from statsmodels.tsa.seasonal import STL
+from sklearn.covariance import EllipticEnvelope
 
 import pandas as pd 
 import numpy as np
@@ -218,16 +219,26 @@ def covariance(df):
 
 def elipticalOutlier(df):
      for s in df['sensor_name'].unique():
-          
+          for u in df['units'].unique():
+               sample = df['value'].to_numpy().reshape(-1, 1)
+               clf = EllipticEnvelope(random_state = 42).fit(sample)
+               prediction = clf.predict(sample)
+               prediction = prediction.tolist()
+               df = pd.DataFrame(df, columns=['value'])
+               df['outlier'] = prediction
+               outliers = df[df['outlier'] == -1]
+     
+     return outliers 
 
      
-     
-     return 
+
+
+
+def spearmansTest(df):
+     spearman_corr = df.corr(method='spearman')
+     return spearman_corr
 
      
-
-
-
 
 
 
