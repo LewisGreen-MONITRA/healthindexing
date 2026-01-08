@@ -19,7 +19,8 @@ def main():
         plotSTL(sensor_filtered_df)
         a_max = 0.1 * len(sensor_filtered_df['value'])
         outlier_index, outlier_value, stats = genESD(sensor_filtered_df['value'], alpha =0.005, max= a_max, return_stats=True)
-
+        elip_outliers = elipticalOutlier(sensor_filtered_df)        
+        sensor_filtered_df['elip'] = elip_outliers
     else:
         if len(sensor_filtered_df) != 0: 
             print(f'Using Modified Z-score for n < 30')
@@ -33,6 +34,7 @@ def main():
     print(outlier_value)
     print(stats['R'])
     print(stats['lambda'])
+    print(sensor_filtered_df.head())
     return 
 
 if __name__ == "__main__":

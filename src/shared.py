@@ -216,21 +216,20 @@ def covariance(df):
 
 
 
-
+     
 def elipticalOutlier(df):
+     """
+     Implementation of eliptical outlier detection method for each sensor and 
+     unit of measure found in the data set     
+     
+     :param df: Dataframe
+     """
      for s in df['sensor_name'].unique():
           for u in df['units'].unique():
                sample = df['value'].to_numpy().reshape(-1, 1)
                clf = EllipticEnvelope(random_state = 42).fit(sample)
-               prediction = clf.predict(sample)
-               prediction = prediction.tolist()
-               df = pd.DataFrame(df, columns=['value'])
-               df['outlier'] = prediction
-               outliers = df[df['outlier'] == -1]
-     
-     return outliers 
-
-     
+               prediction = clf.predict(sample).tolist()
+     return prediction 
 
 
 
