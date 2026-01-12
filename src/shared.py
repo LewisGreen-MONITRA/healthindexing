@@ -190,8 +190,25 @@ def genESD(x, alpha, max, return_stats: bool):
         }
     else: 
          return outlier_indicies, outlier_values
+    
+def empriicalCovar(X, unbiased = True):
+    X = np.asarray(X)
+    if X.ndim != 2: 
+        raise ValueError("Input must be 2d: (time and value recorded for a given sensor)")
+    n = X.shape[0]
+    mean = np.mean(X, axis= 0)
+    Xc = X - mean
+    denominator = n - 1 if unbiased else n
+    cov = (Xc.T @ Xc) / denominator
+    return cov 
 
-
+def rollingCovar(X , window):
+   X = np.asarray(X)
+   n, d = X.shape
+   covs = np.zeros((n - window + 1 , d, d))
+   for i in range(n - window + 1):
+       covs[i] = empriicalCovar(X[i:i+window])
+   return covs 
 
 def elipticalOutlier(df):
      """
