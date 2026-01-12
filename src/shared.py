@@ -7,7 +7,7 @@ from pathlib import Path
 import math 
 from scipy.stats import *
 from scipy.signal import *
-from statsmodels.tsa.seasonal import STL
+#from statsmodels.tsa.seasonal import STL
 from sklearn.covariance import EllipticEnvelope
 
 import pandas as pd 
@@ -20,21 +20,22 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set_theme(style="whitegrid")
 
+def getData():
+     df = pd.read_csv("C:/Users/ldgre/Desktop/wfh/healthindexing/data/data.csv")
 
-df = pd.read_csv("C:/Users/lewis.green/Documents/healthindexing/src/data.csv")
-# reading == value rounded to 3 sf
-# tidy the column names
-df.columns = df.columns.str.replace(" ", "_")
-df.columns = df.columns.str.lower()
+     # reading == value rounded to 3 sf
+     # tidy the column names
+     df.columns = df.columns.str.replace(" ", "_")
+     df.columns = df.columns.str.lower()
 
-sensor = df['sensor_name'].unique()
+     sensor = df['sensor_name'].unique()
 
-features = ['value', 'time', 'sensor_name', 'units']
-filtered = df[features]
-filtered = filtered.set_index('time')
+     features = ['value', 'time', 'sensor_name', 'units']
+     filtered = df[features]
+     filtered = filtered.set_index('time')
 
-unit_Dict = df['units'].to_dict()
-sensor_Dict = df['sensor_name'].to_dict()
+     return filtered
+
 
 def modifiedZscore(x):
     """
@@ -190,33 +191,8 @@ def genESD(x, alpha, max, return_stats: bool):
     else: 
          return outlier_indicies, outlier_values
 
-def covariance(df):
-     """
-     Calculate matrix covariance for given sensors of time series data. 
-     given a matrix m, each vector within the matrix contains time series data for each 
-     sensor, say m1 m2....mi with data taken from each value measured say x y... 
-     each of the matricies are created by the data collected at each timestamp 
-     
-     m =    x  y 
-         m1 1  2
-         m2 2  1
-         m3 1  2
-     
-     calculate the mean of a given matrix, the average values of each vector within the
-     initial matrix m 
-
-     can then calculate the std between means at each vector space 
-
-     need to create the matrix. isolate each value and assign them to a vector/column 
-     in the matrix. 
-
-     :param df: Sample 
-     """
-     
 
 
-
-     
 def elipticalOutlier(df):
      """
      Implementation of eliptical outlier detection method for each sensor and 
@@ -227,7 +203,7 @@ def elipticalOutlier(df):
      for s in df['sensor_name'].unique():
           for u in df['units'].unique():
                sample = df['value'].to_numpy().reshape(-1, 1)
-               clf = EllipticEnvelope(random_state = 42).fit(sample)
+               clf = EllipticEnvelope(random_state = 42, support_fraction = 0.5)  .fit(sample)
                prediction = clf.predict(sample).tolist()
      return prediction 
 
