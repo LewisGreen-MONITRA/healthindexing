@@ -7,8 +7,8 @@ from pathlib import Path
 import math 
 from scipy.stats import *
 from scipy.signal import *
-#from statsmodels.tsa.seasonal import STL
-from sklearn.covariance import EllipticEnvelope
+from statsmodels.tsa.seasonal import STL
+from sklearn.covariance import EllipticEnvelope, LedoitWolf
 
 import pandas as pd 
 import numpy as np
@@ -209,6 +209,18 @@ def rollingCovar(X , window):
    for i in range(n - window + 1):
        covs[i] = empriicalCovar(X[i:i+window])
    return covs 
+
+def shrinkageCovar(x):
+     """
+     sklearn has a robust approach to covariance shrinkage 
+     
+     :param x: Description
+     """
+     lw = LedoitWolf()
+     lw.fit(x)
+     cov_shrunk = lw.covariance_ 
+
+     return cov_shrunk 
 
 def elipticalOutlier(df):
      """
