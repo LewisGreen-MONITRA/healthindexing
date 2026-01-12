@@ -1,25 +1,31 @@
 import numpy as np
+import shared
 
 # time step
 dt = 1.0  
+
 #  transition matrix
 A = np.array([[1.0, dt],
               [0.0, 1.0]])  
 
 # observation matrix
 H = np.array([[1.0, 0.0]])  
+
 # process noise 
 Q = np.array([[1.0, 0.0],
               [0.0, 1.0]])  
 
 # measurement noise
 R = np.array([[1e-2]])  
+
 # initial state estimation 
 x = np.array([[0.0], [1.0]])  
+
 # initial uncertainty
 P = np.array([[1.0, 0.0],
               [0.0, 1.0]])  
-     
+
+
 def kalmanFilter(x, P, z, A, H, Q, R):
      """
      Simple Kalman Filter Implementation
@@ -46,3 +52,12 @@ def kalmanFilter(x, P, z, A, H, Q, R):
      return x_upd, P_upd
 
 
+# example with filtered data, given sensor and unit 
+df = shared.getData()
+df = df[df['sensor_name'] == "63-MGC-202 L1"]
+df = df[df['units'] == "C"]
+
+for value in df['value']:
+     x = np.array([[value], [0.0]])
+     x, P = kalmanFilter(x, P, value, A, H, Q, R)
+     print(f'Updated State: {x.flatten()}, Uncertainty: {P}')

@@ -214,7 +214,7 @@ def shrinkageCovar(x):
      """
      sklearn has a robust approach to covariance shrinkage 
      
-     :param x: Description
+     :param x: values 
      """
      lw = LedoitWolf()
      lw.fit(x)
@@ -236,22 +236,9 @@ def elipticalOutlier(df):
                prediction = clf.predict(sample).tolist()
      return prediction 
 
-
-
 def spearmansTest(df):
      spearman_corr = df.corr(method='spearman')
      return spearman_corr
-
-     
-
-
-
-
-
-
-
-
-
 
 
 

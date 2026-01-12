@@ -17,7 +17,7 @@ def main():
         threshold = 2 # standard for cpaturing highly significant outliers,  p<0.001 
         outliers = sensor_filtered_df[(sensor_filtered_df['z_score'].abs() > threshold)]
         plotResults(sensor_filtered_df, outliers)
-        #plotSTL(sensor_filtered_df)
+        plotSTL(sensor_filtered_df)
         a_max = 0.1 * len(sensor_filtered_df['value'])
         outlier_index, outlier_value, stats = genESD(sensor_filtered_df['value'], alpha =0.005, max= a_max, return_stats=True)
         #elip_outliers = elipticalOutlier(sensor_filtered_df)        
