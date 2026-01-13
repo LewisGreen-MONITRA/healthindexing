@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 sns.set_theme(style="whitegrid")
 
 def getData():
+     # change path as needed 
      df = pd.read_csv("C:/Users/ldgre/Desktop/wfh/healthindexing/data/data.csv")
 
      # reading == value rounded to 3 sf
