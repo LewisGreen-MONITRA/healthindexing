@@ -1,5 +1,6 @@
 import numpy as np
 import shared
+import matplotlib.pyplot as plt
 
 # time step
 dt = 1.0  
@@ -49,18 +50,53 @@ def kalmanFilter(x, P, z, A, H, Q, R):
      I = np.eye(P.shape[0])
      P_upd = (I - K @ H) @ P_pred
 
-     return x_upd, P_upd
+     nis = float(y.T @ np.linalg.inv(S) @ y)
+
+     return x_upd, P_upd, y.item(), nis
 
 
 # example with filtered data, given sensor and unit 
 df = shared.getData()
 df = df[df['sensor_name'] == "63-MGC-202 L1"]
 df = df[df['units'] == "C"]
+residuals = []
+nis_values = []
+z_scores = []
+
+hybrid_flags = []  
+
 
 for value in df['value']:
      x = np.array([[value], [0.0]])
-     x, P = kalmanFilter(x, P, value, A, H, Q, R)
-     print(f'Updated State: {x.flatten()}, Uncertainty: {P}')
+     x, P, residual, nis = kalmanFilter(x, P, value, A, H, Q, R)
+     print(f'Updated State: {x.flatten()}, Uncertainty: {P}, Residual: {residual}, NIS: {nis}')
+    
+     residuals.append(residual)
+     nis_values.append(nis)
+
+     if len(residuals) >= 15:
+          window = residuals[-15:]
+          mu = np.mean(window)
+          sigma = np.std(window) + 1e-8
+          z_score = (residual - mu) / sigma
+     else:
+          z_score = 0.0
+
+z_scores.append(z_score)
+hybrid_flags.append(
+     (nis > 6.63) or (abs(z_score) > 3.0)
+)
+
+plt.figure()
+plt.plot(df['value'].values, label="Measurement")
+plt.plot(hybrid_flags, label="Hybrid anomaly flag")
+plt.xlabel("Time step")
+plt.ylabel("Value / Flag")
+plt.legend()
+plt.title("Hybrid Kalman + Z-score Anomaly Detector")
+plt.show()
+
+
 
 
 
