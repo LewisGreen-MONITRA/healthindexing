@@ -240,5 +240,47 @@ def spearmansTest(df):
      spearman_corr = df.corr(method='spearman')
      return spearman_corr
 
+def kalmanZscoreHybrid(df, sensor_name, units="C", z_threshold=2.0, nis_threshold=6.33, 
+                       window_size=15, process_noise=1.0, measurement_noise=0.01):
+    """
+    Hybrid anomaly detection combining Kalman filtering with z-score analysis.
+    
+    :param df: full dataframe
+    :param sensor_name: sensor to filter by
+    :param units: units to filter by
+    :param z_threshold: z-score threshold
+    :param nis_threshold: NIS threshold
+    :param window_size: window for rolling z-score
+    :param process_noise: Kalman process noise
+    :param measurement_noise: Kalman measurement noise
+    :return: dataframe with anomaly indicators and metrics
+    """
+    from kalman import detectAnomaliesKalman
+    
+    # Filter data
+    sensor_df = df[df['sensor_name'] == sensor_name].copy()
+    sensor_df = sensor_df[sensor_df['units'] == units].copy()
+    
+    if len(sensor_df) == 0:
+        return None
+    
+    # Run detection
+    results = detectAnomaliesKalman(
+        sensor_df['value'].values,
+        z_score_threshold=z_threshold,
+        nis_threshold=nis_threshold,
+        window_size=window_size,
+        process_noise=process_noise,
+        measurement_noise=measurement_noise
+    )
+    
+    # Add results to dataframe
+    sensor_df['kalman_residual'] = results['residuals']
+    sensor_df['nis'] = results['nis_values']
+    sensor_df['kalman_zscore'] = results['z_scores']
+    sensor_df['is_anomaly'] = results['anomaly_flags']
+    
+    return sensor_df
+
 
 
