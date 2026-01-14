@@ -22,7 +22,7 @@ sns.set_theme(style="whitegrid")
 
 def getData():
      # change path as needed 
-     df = pd.read_csv("C:/Users/ldgre/Desktop/wfh/healthindexing/data/data.csv")
+     df = pd.read_csv("C:/Users/lewis.green/Documents/healthindexing/src/data.csv")
 
      # reading == value rounded to 3 sf
      # tidy the column names
@@ -220,7 +220,6 @@ def shrinkageCovar(x):
      lw = LedoitWolf()
      lw.fit(x)
      cov_shrunk = lw.covariance_ 
-
      return cov_shrunk 
 
 def elipticalOutlier(df):
@@ -233,7 +232,7 @@ def elipticalOutlier(df):
      for s in df['sensor_name'].unique():
           for u in df['units'].unique():
                sample = df['value'].to_numpy().reshape(-1, 1)
-               clf = EllipticEnvelope(random_state = 42, support_fraction = 0.5)  .fit(sample)
+               clf = EllipticEnvelope(random_state = 42, support_fraction = 0.5).fit(sample)
                prediction = clf.predict(sample).tolist()
      return prediction 
 
@@ -241,7 +240,7 @@ def spearmansTest(df):
      spearman_corr = df.corr(method='spearman')
      return spearman_corr
 
-def kalmanZscoreHybrid(df, sensor_name, units="C", z_threshold=2.0, nis_threshold=6.33, 
+def kalmanZscoreHybrid(df, sensor_name, units="V", z_threshold=2.0, nis_threshold=6.33, 
                        window_size=15, process_noise=1.0, measurement_noise=0.01):
     """
     Hybrid anomaly detection combining Kalman filtering with z-score analysis.

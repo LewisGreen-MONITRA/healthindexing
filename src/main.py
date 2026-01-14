@@ -1,5 +1,5 @@
 from shared import * 
-from kalman import detectAnomaliesKalman, plotKalmanResults
+from kalman import * 
 
 def main():
     """
@@ -7,11 +7,12 @@ def main():
     Identifies anomalous points in time series data that deviate significantly 
     from expected behavior.
     """
-    # Filter by sensor
+    # Filter by sensor and by units
+    # if units or sensor filter not set correctly, no results will be shown. 
     filtered = getData()
-    selected_sensor = "63-MGC-202 L1"
+    selected_sensor = "L2 Rotating Machine"
     sensor_filtered_df = filtered[filtered['sensor_name'] == selected_sensor]
-    sensor_filtered_df = sensor_filtered_df[sensor_filtered_df['units'] == "C"]
+    sensor_filtered_df = sensor_filtered_df[sensor_filtered_df['units'] == "V"]
     
     if len(sensor_filtered_df) == 0:
         print(f'ERROR: No Samples Provided for Sensor {selected_sensor}')
@@ -29,7 +30,7 @@ def main():
     if len(sensor_filtered_df) >= 30:
         print(f'Using Z-score method (n = {len(sensor_filtered_df)} > 30)')
         sensor_filtered_df['z_score'] = modifiedZscore(sensor_filtered_df['value'])
-        threshold = 2  # standard for capturing highly significant outliers, p<0.001
+        threshold = 3.0  # standard for capturing highly significant outliers, p<0.001
         z_outliers = sensor_filtered_df[(sensor_filtered_df['z_score'].abs() > threshold)]
         print(f"Z-score outliers detected: {len(z_outliers)}")
         
@@ -37,7 +38,7 @@ def main():
         plotResults(sensor_filtered_df, z_outliers)
         
         # STL decomposition
-        plotSTL(sensor_filtered_df)
+        # plotSTL(sensor_filtered_df)
         
         # Generalized ESD test
         a_max = 0.1 * len(sensor_filtered_df['value'])
@@ -106,10 +107,9 @@ def main():
     print(f"Kalman hybrid detected anomalies: {n_kalman_anomalies}")
     
     # Show data head
-    print("\nFirst 5 data points:")
-    print(sensor_filtered_df[['value', 'z_score', 'kalman_residual', 
-                              'nis', 'kalman_zscore', 'is_anomaly']].head())
-    
+    print("\nDetected Anomalies:")
+    anomalies = sensor_filtered_df[sensor_filtered_df['is_anomaly'] == True]  
+    print(anomalies)
     return
 
 if __name__ == "__main__":
