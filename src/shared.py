@@ -31,7 +31,7 @@ def getData():
 
      sensor = df['sensor_name'].unique()
 
-     features = ['value', 'time', 'sensor_name', 'units']
+     features = ['value', 'time', 'sensor_name', 'units', 'trend_field']
      filtered = df[features]
      filtered = filtered.set_index('time')
 
@@ -236,11 +236,19 @@ def elipticalOutlier(df):
                prediction = clf.predict(sample).tolist()
      return prediction 
 
+"""
+Correlation tests
+"""
+
 def spearmansTest(df):
      spearman_corr = df.corr(method='spearman')
      return spearman_corr
 
-def kalmanZscoreHybrid(df, sensor_name, units="V", z_threshold=2.0, nis_threshold=6.33, 
+def pearsonsTest(df):
+     pearsons_corr = df.corr(method='pearson')
+     return pearsons_corr
+
+def kalmanZscoreHybrid(df, sensor_name, units="C", z_threshold=2.0, nis_threshold=6.33, 
                        window_size=15, process_noise=1.0, measurement_noise=0.01):
     """
     Hybrid anomaly detection combining Kalman filtering with z-score analysis.
@@ -283,4 +291,13 @@ def kalmanZscoreHybrid(df, sensor_name, units="V", z_threshold=2.0, nis_threshol
     return sensor_df
 
 
-
+def seperateSensors(df):
+     for s in df['sensor_name'].unique():
+          selected_sensor = s
+          for u in df['units'].unique():
+               selected_unit = u 
+               filtered_df = df[df['sensor_name'] == s]
+               filtered_df = filtered_df[filtered_df['units'] == u]
+               
+     
+     return 

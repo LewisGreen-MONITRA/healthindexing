@@ -172,6 +172,7 @@ def plotKalmanResults(df, detection_results):
     fig, axes = plt.subplots(3, 1, figsize=(12, 10))
     
     time_index = range(len(df))
+    units = str(df['units'].unique())
     
     # Plot 1: Measurements with anomalies highlighted
     axes[0].plot(time_index, df['value'].values, label='Sensor Value', 
@@ -180,7 +181,7 @@ def plotKalmanResults(df, detection_results):
     if len(anomaly_indices) > 0:
         axes[0].scatter(anomaly_indices, df['value'].values[anomaly_indices], 
                        color='red', s=100, label='Anomaly', marker='o', zorder=5)
-    axes[0].set_ylabel('Value')
+    axes[0].set_ylabel(units)
     axes[0].set_title('Time Series with Detected Anomalies')
     axes[0].legend()
     axes[0].grid(True, alpha=0.3)
@@ -193,7 +194,7 @@ def plotKalmanResults(df, detection_results):
     axes[1].axhline(y=2.0, color='r', linestyle='--', label='Z-score threshold')
     axes[1].axhline(y=-2.0, color='r', linestyle='--')
     axes[1].set_ylabel('Score')
-    axes[1].set_title('Kalman Residuals and Z-scores')
+    axes[1].set_title('Kalman Residuals and Z-scores for []')
     axes[1].legend()
     axes[1].grid(True, alpha=0.3)
     
