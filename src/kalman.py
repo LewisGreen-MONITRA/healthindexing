@@ -148,7 +148,7 @@ def detectAnomaliesKalman(time_series, z_score_threshold=2.0, nis_threshold=6.33
             z_score = 0.0
         
         z_scores.append(z_score)
-        
+            
         # Hybrid anomaly detection: NIS-based OR z-score based
         is_anomaly = (nis > nis_threshold) or (np.abs(z_score) > z_score_threshold)
         anomaly_flags.append(is_anomaly)
@@ -194,7 +194,7 @@ def plotKalmanResults(df, detection_results):
     axes[1].axhline(y=2.0, color='r', linestyle='--', label='Z-score threshold')
     axes[1].axhline(y=-2.0, color='r', linestyle='--')
     axes[1].set_ylabel('Score')
-    axes[1].set_title('Kalman Residuals and Z-scores for []')
+    axes[1].set_title('Kalman Residuals and Z-scores')
     axes[1].legend()
     axes[1].grid(True, alpha=0.3)
     
@@ -204,7 +204,7 @@ def plotKalmanResults(df, detection_results):
     axes[2].axhline(y=6.33, color='r', linestyle='--', label='NIS threshold')
     axes[2].set_xlabel('Time')
     axes[2].set_ylabel('NIS')
-    axes[2].set_title('Normalized Innovation Squared (NIS)')
+    axes[2].set_title('Normalsed Innovation Squared (NIS)')
     axes[2].legend()
     axes[2].grid(True, alpha=0.3)
     
